@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zsw.busi.dao.GoodsDao">
+    <cache   readOnly="true" >
+        <property name="timeToIdleSeconds" value="3600"/><!--1 hour-->
+        <property name="timeToLiveSeconds" value="3600"/><!--1 hour-->
+        <property name="maxEntriesLocalHeap" value="1000"/>
+        <property name="maxEntriesLocalDisk" value="10000000"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+    <resultMap type="com.zsw.busi.entity.Goods" id="goods">
+        <id property="id" column="id"/>
+        <result property="goodsNo" column="goods_no"/>
+        <result property="brand" column="brand"/>
+        <result property="packageType" column="package_type"/>
+        <result property="location" column="location"/>
+        <result property="salePrice" column="sale_price"/>
+        <result property="state" column="state"/>
+        <result property="description" column="description"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+
+    <!--新增一条Goods记录-->
+    <insert id="addGoods" parameterType="com.zsw.busi.entity.Goods" >
+        insert into erp_ot_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                id,
+            <if test="goodsNo != null">
+                goods_no,
+            </if>
+            <if test="location != null">
+                location,
+            </if>
+            <if test="brand != null">
+                brand,
+            </if>
+            <if test="packageType != null">
+                package_type,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="salePrice != null">
+                sale_price,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+                create_time,
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="modifiedTime != null">
+                modified_time,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            #{id},
+
+            <if test="goodsNo != null">
+                #{goodsNo},
+            </if>
+            <if test="brand != null">
+                #{brand},
+            </if>
+            <if test="packageType != null">
+                #{packageType},
+            </if>
+            <if test="location != null">
+                #{location},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="salePrice != null">
+                #{salePrice},
+            </if>
+            <if test="state != null">
+                #{state},
+            </if>
+            <if test="creator != null">
+                #{creator},
+            </if>
+
+                sysdate(),
+
+            <if test="modifier != null">
+                #{modifier},
+            </if>
+            <if test="modifiedTime != null">
+                #{modified_time},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据goodsNo查询Goods-->
+    <select id="getByGoodsNo" parameterType="String" resultMap="goods" useCache="true">
+        select * from erp_ot_goods where goods_no=#{goodsNo}
+    </select>
+    <!--根据goodsId查询Goods-->
+    <select id="getByGoodsId" parameterType="String" resultMap="goods" useCache="true">
+        select * from erp_ot_goods where id=#{id}
+    </select>
+   <!-- 更新-->
+    <update id="updGoods" parameterType="com.zsw.busi.entity.Goods">
+        update erp_ot_goods set
+              goods_no=#{goodsNo},
+              brand = #{brand},
+              package_type=#{packageType},
+              location=#{location},
+              sale_price=#{salePrice},
+              state=${state},
+              description=#{description},
+              modifier=#{modifier},
+              modified_time=sysdate()
+        where id=#{id}
+    </update>
+
+    <!--根据goodsId查询库存-->
+    <select id="countStockByGoodsId" parameterType="String" resultType="Integer" useCache="false">
+        select IFNULL(sum(stock),0) from erp_ot_goods_detail t
+        where t.goods_id=#{goodsId} and t.stock>0 and t.state=0
+    </select>
+
+    <!--根据型号模糊查询-->
+    <select id="queryByGoodsNo" parameterType="String" resultMap="goods" useCache="false">
+      select * from erp_ot_goods where goods_no like concat('%',#{goodsNo},'%') and state='0' order by goods_no
+    </select>
+
+    <!--多条件模糊分页查询-->
+    <select id="queryByCondition" parameterType="Map" resultMap="goods" useCache="false">
+        select * from erp_ot_goods
+        where 1=1 and
+        <trim  suffixOverrides="and">
+            <if test="goodsNo != null">
+                goods_no like concat('%',#{goodsNo},'%') and
+            </if>
+            <if test="state != null">
+                state =#{state} and
+            </if>
+        </trim>
+        order by goods_no
+        <if test="pageNo != null and test=pageSize != null" >
+          limit #{limit} ,#{pageSize}
+        </if>
+
+    </select>
+
+    <!--count多条件模糊分页查询-->
+    <select id="countByCondition" parameterType="Map" resultType="Integer" useCache="false">
+        select count(*) from erp_ot_goods
+        where 1=1 and
+        <trim  suffixOverrides="and">
+            <if test="goodsNo != null">
+                goods_no like concat('%',#{goodsNo},'%') and
+            </if>
+            <if test="state != null">
+                state =#{state} and
+            </if>
+        </trim>
+        order by goods_no
+    </select>
+</mapper>

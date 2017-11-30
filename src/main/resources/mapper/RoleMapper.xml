@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zsw.sys.dao.RoleDao">
+
+    <resultMap type="com.zsw.sys.entity.Role" id="roleInfo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="description" column="description"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+
+    <!--<select id="findByPage" resultMap="userInfo">
+        select * from erp_sys_user limit #{offset},#{limit}
+    </select>-->
+
+    <!--新增一条role记录-->
+    <insert id="insert" parameterType="com.zsw.sys.entity.Role">
+        insert into erp_st_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            id,
+            <if test="name != null">
+                name,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+
+                create_time,
+
+            <if test="modifier != null">
+                modifier,
+            </if>
+            <if test="modifiedTime != null">
+                modified_time,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            #{id},
+
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="code != null">
+               #{code} ,
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="creator != null">
+                #{creator},
+            </if>
+
+            sysdate(),
+
+            <if test="modifier != null">
+                #{modifier},
+            </if>
+            <if test="modifiedTime != null">
+                #{modified_time},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getRolesByUser" parameterType="String" resultMap="roleInfo">
+        select r.id,r.`code`,r.`name` from erp_st_role r
+          left join erp_st_user_role t on r.id=t.role_id where t.user_id=#{userId}
+    </select>
+
+</mapper>

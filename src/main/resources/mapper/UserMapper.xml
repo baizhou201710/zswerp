@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zsw.sys.dao.UserDao">
+
+    <resultMap type="com.zsw.sys.entity.User" id="userInfo">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="state" column="state"/>
+        <result property="password" column="password"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+
+    <select id="findAllUser" resultMap="userInfo">
+        select * from erp_st_user
+    </select>
+
+    <select id="findByPage" resultMap="userInfo">
+        select * from erp_st_user limit #{offset},#{limit}
+    </select>
+
+    <select id="countAll" resultType="Integer">
+        select count(*) from erp_st_user
+    </select>
+
+    <!--新增一条user记录-->
+    <insert id="insert" parameterType="com.zsw.sys.entity.User">
+        insert into erp_st_user (id,username,password,state,creator,create_time) values (#{id },#{username},#{password},#{state},#{creator},sysdate())
+    </insert>
+
+
+    <resultMap type="com.zsw.sys.entity.User" id="userRolePermissionMap">
+        <id property="id" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="state" column="state"/>
+        <!--
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifiedTime" column="modified_time"/>-->
+        <!-- 进行 多表关联插叙，先关联user和role -->
+        <collection property="roles" column="roleid" ofType="com.zsw.sys.entity.Role">
+            <id property="id" column="role_id"/>
+            <result property="name" column="role_name"/>
+            <!-- 再在role中关联role和permission -->
+            <collection property="permissions" column="permissionid" ofType="com.zsw.sys.entity.Permission">
+                <id property="id" column="permission_id"/>
+                <result property="name" column="permission_name"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <sql id="select-base-01">
+        SELECT
+        u.id user_id,
+        u.username username,
+        u.state state,
+        u.password,
+        r.id role_id,
+        r.name role_name,
+        p.id permission_id,
+        p.name permission_name
+        FROM
+        erp_st_user as u,
+        erp_st_role as r,
+        erp_st_user_role as ru,
+        erp_st_permission p,
+        erp_st_role_permission rp
+        WHERE
+        u.id = ru.user_id
+        AND
+        r.id = ru.role_id
+        AND
+        r.id = rp.role_id
+        AND
+        p.id = rp.permission_id
+    </sql>
+
+    <select id="getUserRolePermissionByUserName" parameterType="string" resultMap="userRolePermissionMap">
+        <include refid="select-base-01" />
+        AND
+        u.username = #{username}
+    </select>
+
+</mapper>

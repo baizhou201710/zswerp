@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+					http://www.springframework.org/schema/beans/spring-beans.xsd
+					http://www.springframework.org/schema/security
+					http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- 配置不过滤的资源（静态资源及登录相关） -->
+    <security:http pattern="/resources/**" security="none"></security:http>
+
+    <security:http pattern="/WEB-INF/login.jsp" security="none"></security:http>
+    <security:http pattern="/getCode" security="none" /><!-- 不过滤验证码 -->
+    <security:http pattern="/test/**" security="none"></security:http><!-- 不过滤测试内容 -->
+
+    <security:authentication-manager alias="authenticationManager" >
+        <!-- 加入开发人员自定义的Provider -->
+        <security:authentication-provider user-service-ref="myUserDetailsServiceImpl">
+        </security:authentication-provider>
+    </security:authentication-manager>
+    <!--&lt;!&ndash; 未登录的切入点 &ndash;&gt;
+    <bean id="authenticationProcessingFilterEntryPoint"  class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <property name="loginFormUrl" value="/login.htm" />
+    </bean>-->
+    
+    <security:http auto-config="true">
+
+      <!--  <security:intercept-url pattern="/app.jsp" access="ROLE_SERVICE"/>
+        <security:intercept-url pattern="/**" access="ROLE_ADMIN"/>-->
+
+        <security:form-login login-page="/WEB-INF/login.jsp" authentication-failure-url="/WEB-INF/login.jsp"
+                        default-target-url="/WEB-INF/page/index.jsp"/>
+
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service >
+                <security:user name="admin" password="admin" authorities="ROLE_ADMIN"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+    <bean id="myUserDetailsServiceImpl" class="com.zsw.sys.service.impl.MyUserDetailsService" />
+</beans>
