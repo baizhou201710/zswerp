@@ -11,6 +11,7 @@
         <result property="createTime" column="create_time"/>
         <result property="modifier" column="modifier"/>
         <result property="modifiedTime" column="modified_time"/>
+        <result property="roleCode" column="roleCode"/>
     </resultMap>
 
     <select id="findAllUser" resultMap="permissionInfo">
@@ -77,4 +78,71 @@
         </trim>
     </insert>
 
+    <!-- 初始化获取所有的角色与权限-->
+    <select id="getAllResAndRole" resultMap="permissionInfo">
+        select r.code roleCode,p.url from erp_st_role r left join erp_st_role_permission rp on r.id=rp.role_id left JOIN erp_st_permission p on p.id=rp.permission_id
+        where p.state='0' order by p.order_num ,p.url
+    </select>
+
+    <!--获取用户的菜单-->
+    <select id="getPermissionByUser" parameterType="Map" resultMap="permissionInfo">
+      select DISTINCT p.*
+		from erp_st_permission p
+		left join erp_st_role_permission rp on p.id = rp.permission_id
+		left join erp_st_role r on r.id = rp.role_id
+		left join erp_st_user_role ur on ur.role_id = r.id
+		left join erp_st_user u on u.id = ur.user_id
+		where 1=1
+		<if test="userId!=null">
+            and u.id =#{userId}
+        </if>
+        <if test="level!=null">
+            and p.level =#{level}
+        </if>
+        <if test="type!=null">
+            and p.type =#{type}
+        </if>
+        <if test="state!=null">
+            and p.state =#{state}
+        </if>
+          order by p.level,p.order_num
+    </select>
+
+    <!--会根据id查询下级-->
+    <select id="getChildById" parameterType="String" resultMap="permissionInfo">
+        select * from erp_st_permission p where p.parent_id=#{id}
+    </select>
+
+    <!--根据id查询-->
+    <select id="getById" parameterType="String" resultMap="permissionInfo">
+        select * from erp_st_permission p where p.id=#{id}
+    </select>
+
+    <!--多条件查询-->
+    <select id="getByCondition" parameterType="Map" resultMap="permissionInfo">
+        select * from erp_st_permission p
+        where 1=1
+        <if test="key !=null">
+            and name like concat('%',#{key},'%')
+        </if>
+        <if test="parentId!=null">
+            and parent_id=#{parentId}
+        </if>
+        order by level,order_num,name
+        limit #{limit} ,#{pageSize}
+
+    </select>
+
+    <!--多条件查询-->
+    <select id="countByCondition" parameterType="Map" resultType="Integer">
+        select count(*) from erp_st_permission p
+        where 1=1
+        <if test="key !=null">
+            and name like concat('%',#{key},'%')
+        </if>
+        <if test="parentId!=null">
+            and parent_id=#{parentId}
+        </if>
+
+    </select>
 </mapper>

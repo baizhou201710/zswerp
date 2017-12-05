@@ -1,7 +1,7 @@
 package com.zsw.busi.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.zsw.base.Constant;
+import com.zsw.base.ErpConstants;
 import com.zsw.base.Result;
 import com.zsw.base.ServiceException;
 import com.zsw.busi.entity.Goods;
@@ -76,7 +76,7 @@ public class GoodsController {
             }
             condition.put("pageSize", pageSize);
             condition.put("limit", (pageNo - 1) * pageSize);
-            condition.put("state", Constant.STATE_VAILD);
+            condition.put("state", ErpConstants.STATE_VAILD);
 
 
             //count记录总数
@@ -119,7 +119,7 @@ public class GoodsController {
                     }
                 }
             }
-            result.setCode(Constant.RESULT_SUCCESS);
+            result.setCode(ErpConstants.RESULT_SUCCESS);
             Map contentsMap = new HashMap();
             contentsMap.put("goodsList", goodsList);
             contentsMap.put("page", page);
@@ -127,8 +127,8 @@ public class GoodsController {
 
         } catch (ServiceException e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
 
         }
         return JSON.toJSONString(result);
@@ -155,13 +155,13 @@ public class GoodsController {
             if (!Empty.isEmpty(goods)) {
                 goods.setTolStock(goodsService.countStockByGoodsId(id));
             }
-            result.setCode(Constant.STATE_VAILD);
+            result.setCode(ErpConstants.STATE_VAILD);
             result.setContent(goods);
         } catch (ServiceException e) {
             e.printStackTrace();
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
 
 
@@ -196,7 +196,7 @@ public class GoodsController {
             //封装信息
             Goods newGoods = new Goods();
             newGoods.setGoodsNo(goodsNo);
-            newGoods.setState(Constant.STATE_VAILD);
+            newGoods.setState(ErpConstants.STATE_VAILD);
             newGoods.setBrand(brand);
             newGoods.setPackageType(packageType);
             newGoods.setLocation(location);
@@ -209,18 +209,18 @@ public class GoodsController {
                 if (inStock.equals("0")) {//有入库操作
                     //校验入库操作参数完整性
                     if (Empty.isEmpty(stock) || stock.intValue() > 0) {//校验入库数量
-                        result.setCode(Constant.RESULT_FAILURE);
+                        result.setCode(ErpConstants.RESULT_FAILURE);
                         result.setMsg("入库数量必须大于0！");
                         return JSON.toJSONString(result);
                     }
                     if (Empty.isEmpty(purchasePrice) || purchasePrice.floatValue() <= 0.00f) {//入库价格
-                        result.setCode(Constant.RESULT_FAILURE);
+                        result.setCode(ErpConstants.RESULT_FAILURE);
                         result.setMsg("入库价格必须大于0！");
                         return JSON.toJSONString(result);
                     }
 
                     if (Empty.isEmpty(batch)) {//型号批次
-                        result.setCode(Constant.RESULT_FAILURE);
+                        result.setCode(ErpConstants.RESULT_FAILURE);
                         result.setMsg("入库批次不能为空！");
                         return JSON.toJSONString(result);
                     }
@@ -232,7 +232,7 @@ public class GoodsController {
                     detail.setBatch(batch);//生产批次号
                     detail.setStock(stock.intValue());
                     detail.setPurchasePrice(purchasePrice.floatValue());
-                    detail.setState(Constant.STATE_VAILD);
+                    detail.setState(ErpConstants.STATE_VAILD);
                     //入库批次号
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyMMddHHmm");
                     detail.setInStorageBatch(sdf.format(new Date()));
@@ -254,8 +254,8 @@ public class GoodsController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
 
         //记录日志
@@ -279,19 +279,19 @@ public class GoodsController {
                 Goods goods = goodsService.getById(id);
                 if (!Empty.isEmpty(goods)) {
                     goodsService.del(id);
-                    result.setCode(Constant.RESULT_SUCCESS);
+                    result.setCode(ErpConstants.RESULT_SUCCESS);
                 } else {
-                    result.setCode(Constant.RESULT_FAILURE);
+                    result.setCode(ErpConstants.RESULT_FAILURE);
                     result.setMsg("不存在该型号！");
                 }
 
             } catch (ServiceException e) {
                 e.printStackTrace();
-                result.setCode(Constant.RESULT_FAILURE);
-                result.setMsg(Constant.SYS_ERR);
+                result.setCode(ErpConstants.RESULT_FAILURE);
+                result.setMsg(ErpConstants.SYS_ERR);
             }
         } else {
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("id不能为空！");
         }
 
@@ -315,23 +315,23 @@ public class GoodsController {
         //入库参数校验
         if (Empty.isEmpty(goodsId)) {
 
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("id不能为空！");
             return JSON.toJSONString(result);
         }
         if (Empty.isEmpty(stock) || stock.intValue() <= 0) {//校验入库数量
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("入库数量必须大于0！");
             return JSON.toJSONString(result);
         }
         if (Empty.isEmpty(purchasePrice) || purchasePrice.floatValue() <= 0.00f) {//入库价格
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("入库价格必须大于0！");
             return JSON.toJSONString(result);
         }
 
         if (Empty.isEmpty(batch)) {//型号批次
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("入库批次不能为空！");
             return JSON.toJSONString(result);
         }
@@ -351,16 +351,16 @@ public class GoodsController {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyMMddHHmm");
                 detail.setInStorageBatch(sdf.format(new Date()));
                 result = goodsDetailService.inStock(detail);
-                result.setCode(Constant.RESULT_SUCCESS);
+                result.setCode(ErpConstants.RESULT_SUCCESS);
             } else {
-                result.setCode(Constant.RESULT_FAILURE);
+                result.setCode(ErpConstants.RESULT_FAILURE);
                 result.setMsg("不存在该型号！");
             }
 
         } catch (ServiceException e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
 
 
@@ -392,7 +392,7 @@ public class GoodsController {
         //入库参数校验
         if (Empty.isEmpty(id)) {
 
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("id不能为空！");
             return JSON.toJSONString(result);
         }
@@ -402,14 +402,14 @@ public class GoodsController {
         try {
             if (type.equals("1")) {//出库
                 if (Empty.isEmpty(stock) || stock.intValue() <= 0) {//校验入库数量
-                    result.setCode(Constant.RESULT_FAILURE);
+                    result.setCode(ErpConstants.RESULT_FAILURE);
                     result.setMsg("入库数量必须大于0！");
                     return JSON.toJSONString(result);
                 }
                 result = goodsDetailService.outStock(id, stock);
             } else if (type.equals("2")) {//库存调整
                 if (Empty.isEmpty(stock) || stock.intValue() <= 0) {//校验入库数量
-                    result.setCode(Constant.RESULT_FAILURE);
+                    result.setCode(ErpConstants.RESULT_FAILURE);
                     result.setMsg("库存数量必须大于0！");
                     return JSON.toJSONString(result);
                 }
@@ -418,8 +418,8 @@ public class GoodsController {
 
         } catch (ServiceException e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
         return JSON.toJSONString(result);
     }
@@ -431,7 +431,7 @@ public class GoodsController {
         //入库参数校验
         if (Empty.isEmpty(id)) {
 
-            result.setCode(Constant.RESULT_FAILURE);
+            result.setCode(ErpConstants.RESULT_FAILURE);
             result.setMsg("id不能为空！");
             return JSON.toJSONString(result);
         }
@@ -441,8 +441,8 @@ public class GoodsController {
 
         } catch (ServiceException e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
         return JSON.toJSONString(result);
     }
@@ -461,7 +461,7 @@ public class GoodsController {
             condition.put("goodsNo", key);
         }
 
-        condition.put("state", Constant.STATE_VAILD);
+        condition.put("state", ErpConstants.STATE_VAILD);
 
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyMMddHHmm");
@@ -504,12 +504,12 @@ public class GoodsController {
             }
             workbook.write();
             workbook.close();
-            result.setCode(Constant.RESULT_SUCCESS);
+            result.setCode(ErpConstants.RESULT_SUCCESS);
             result.setContent(filePath.replaceAll("\\\\","/"));
         } catch (Exception e) {
             e.printStackTrace();
-            result.setCode(Constant.RESULT_FAILURE);
-            result.setMsg(Constant.SYS_ERR);
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
         }
 
         return JSON.toJSONString(result);

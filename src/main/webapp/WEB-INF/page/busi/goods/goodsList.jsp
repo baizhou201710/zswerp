@@ -317,9 +317,6 @@
     var tolPgae=1;//总页数，默认一页
     var selGoodsId="";//被点击的goods
     $(document).ready(function(){
-        $('#kkk').click(function(){
-
-        });
         //初始化查询
         queryGoodsList(pageNo,pageSize);
 
@@ -438,6 +435,9 @@
                 if (data) {
                     if (data.code == 0) {
                         //清除原有数据列表
+                        $("#tolRecord").html(data.content.page.tolRecord);
+                        $("#tolPage").html(data.content.page.tolPage);
+                        tolPgae=data.content.page.tolPage;
                         $("#contents").empty();
                         if (data.content && data.content.goodsList) {
                             var goodsList = data.content.goodsList;
@@ -464,7 +464,6 @@
                                     }
 
                                    $tr=$(tr);
-                                    console.info($tr);
                                 $("#contents").append($tr);
                                 //有型号详情
                                 if (goodsList[i].goodsDetails) {
@@ -495,9 +494,7 @@
 
                             }
 
-                            $("#tolRecord").html(data.content.page.tolRecord);
-                            $("#tolPage").html(data.content.page.tolPage);
-                            tolPgae=data.content.page.tolPage;
+
                             //页码排版
                             if(tolPgae<=5){
                                 if(tolPgae<=1){

@@ -1,8 +1,15 @@
 package com.zsw.sys.controller;
 
-import com.zsw.base.Constant;
+import com.alibaba.fastjson.JSON;
+import com.zsw.base.ErpConstants;
 import com.zsw.base.Result;
+import com.zsw.base.ServiceException;
+import com.zsw.framework.entity.SessionUser;
+import com.zsw.framework.util.SpringSecurityUtils;
+import com.zsw.sys.entity.Permission;
 import com.zsw.sys.entity.User;
+import com.zsw.sys.service.PermissionService;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -15,7 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 登陆登出Controller
@@ -24,13 +35,16 @@ import javax.validation.Valid;
  * @create 2017-11-16 16:56
  */
 @Controller
-@RequestMapping
 public class LogInOutController {
+
+    private static final Logger log = Logger.getLogger(LogInOutController.class);
+    @Resource
+    private PermissionService permissionService;
 
     @RequestMapping(value="/login",method= RequestMethod.GET)
     public String loginForm(Model model){
         model.addAttribute("user", new User());
-        return "/WEB-INF/login.jsp";
+        return "login";
     }
 
     @RequestMapping(value="/login",method=RequestMethod.POST)
@@ -40,8 +54,8 @@ public class LogInOutController {
         Result result =new Result();
         try {
             if(bindingResult.hasErrors()){
-                mav.addObject(Constant.CODE,Constant.RESULT_FAILURE);
-                mav.addObject(Constant.MSG,"用户名或密码错误！");
+                mav.addObject(ErpConstants.CODE, ErpConstants.RESULT_FAILURE);
+                mav.addObject(ErpConstants.MSG,"用户名或密码错误！");
                 return mav;
             }
 
@@ -49,15 +63,29 @@ public class LogInOutController {
             SecurityUtils.getSubject().login(new UsernamePasswordToken(user.getUsername(), user.getPassword()));
             return mav;
         } catch (AuthenticationException e) {
-            mav.addObject(Constant.CODE,Constant.RESULT_FAILURE);
-            mav.addObject(Constant.MSG,"用户名或密码错误！");
+            mav.addObject(ErpConstants.CODE, ErpConstants.RESULT_FAILURE);
+            mav.addObject(ErpConstants.MSG,"用户名或密码错误！");
             return mav;
         }
     }
 
     @RequestMapping("/index")
-    public String index(){
-        return "index";
+    public ModelAndView index(HttpServletRequest request, Model model){
+        ModelAndView mav= new ModelAndView();
+        //查询用户资源
+        request.getSession();
+        SessionUser sessionUser = SpringSecurityUtils.getCurrentUser();
+        log.info(sessionUser.getId());
+        List<Permission> permissions=new ArrayList<Permission>();
+        try {
+            permissions  = permissionService.getPermissionByUserId(sessionUser.getId());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        mav.addObject("permissions", JSON.toJSONString(permissions));
+        mav.addObject("index");
+        return mav;
     }
     @RequestMapping(value="/logout",method=RequestMethod.GET)
     public String logout(RedirectAttributes redirectAttributes ){

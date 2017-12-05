@@ -2,6 +2,8 @@ package com.zsw.sys.entity;
 
 import com.zsw.base.BaseEntity;
 
+import java.util.List;
+
 /**
  * Author baizhou201710@gmail.com
  * Description
@@ -17,6 +19,7 @@ public class Permission extends BaseEntity {
     private int orderNum;//排序号
     private String parentId;//父id
     private String roleCode;
+    private List<Permission> chlidPermissions;
 
 
     public String getToken() {
@@ -89,6 +92,14 @@ public class Permission extends BaseEntity {
 
     public void setRoleCode(String roleCode) {
         this.roleCode = roleCode;
+    }
+
+    public List<Permission> getChlidPermissions() {
+        return chlidPermissions;
+    }
+
+    public void setChlidPermissions(List<Permission> chlidPermissions) {
+        this.chlidPermissions = chlidPermissions;
     }
 
     @Override

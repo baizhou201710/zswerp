@@ -33,14 +33,15 @@
                 <h4 class="text-uppercase font-bold m-b-0">Sign In</h4>
             </div>
             <div class="panel-body">
-                <form class="am-form">
+                <form class="am-form" method="post"
+                      action="j_spring_security_check" onsubmit="return onLogin()">
                     <div class="am-g">
                         <div class="am-form-group">
-                            <input id="username" type="text" class="am-radius"  placeholder="Username" maxlength="15">
+                            <input id="username" name="username" type="text" class="am-radius"  placeholder="Username" maxlength="15">
                         </div>
 
                         <div class="am-form-group form-horizontal m-t-20">
-                            <input id="password" type="password" class="am-radius"  placeholder="Password" maxlength="18">
+                            <input id="password" name="password" type="password" class="am-radius"  placeholder="Password" maxlength="18">
                         </div>
 
                         <div class="am-form-group ">
@@ -50,7 +51,7 @@
                         </div>
 
                         <div class="am-form-group ">
-                            <button id="button" type="button" class="am-btn am-btn-primary am-radius" style="width: 100%;height: 100%;">Log In</button>
+                            <button id="button" type="submit" class="am-btn am-btn-primary am-radius" style="width: 100%;height: 100%;">Log In</button>
                         </div>
 
                         <div class="am-form-group ">
@@ -67,37 +68,18 @@
 </div>
 <script type="text/javascript" src="${contextPath}/resources/js/jquery-1.11.1.min.js" ></script>
 <script>
-    $(document).ready(function(){
-        //登陆
-        $("#button").click(function(){
-            var username= $("#username").val();
-            var password=$("#password").val();
-            if(!username){
-                alert("请输入用户名！");
-            }
-            if(!password){
-                alert("请输入密码！");
-            }
-            console.info("rew");
-            $.ajax({
-                type: "post",
-                dataType: "json",
-                url: '${contextPath}/login',
-                data: {"username":username,"password":password},
-                success: function (data) {
-                    //成功执行
-                   if(data){
-                       if(data.code==0){
-                           //登陆成功自动跳转
-                           window.location.href="${contextPath}/index";
-                       }else{
-                           //失败提示信息
-                           alert(data.msg);
-                       }
-                   }
-                }
-            });
-        });
+    function onLogin(){
+        var username= $("#username").val();
+        var password=$("#password").val();
+        if(!username){
+            alert("请输入用户名！");
+            return false;
+        }
+        if(!password){
+            alert("请输入密码！");
+            return false;
+        }
+    }
 
 
         //校验username参数，只能为数字或字母，不能超过15位
@@ -118,7 +100,6 @@
                 }
             }
         });
-    });
 
 </script>
 </body>

@@ -89,14 +89,14 @@ public class LogAopAction {
                     long end = System.currentTimeMillis();
                     //将计算好的时间保存在实体中
                     log.setResponseTime((end - start));
-                    log.setResult(Constant.RESULT_SUCCESS);
+                    log.setResult(ErpConstants.RESULT_SUCCESS);
                     //保存进数据库
                     logService.save(log);
                 } catch (Throwable e) {
                     // TODO Auto-generated catch block
                     long end = System.currentTimeMillis();
                     log.setResponseTime(end - start);
-                    log.setResult(Constant.RESULT_FAILURE);
+                    log.setResult(ErpConstants.RESULT_FAILURE);
                     logService.save(log);
                 }
             } else {//没有包含注解

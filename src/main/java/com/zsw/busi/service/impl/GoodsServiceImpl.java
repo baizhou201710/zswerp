@@ -1,6 +1,6 @@
 package com.zsw.busi.service.impl;
 
-import com.zsw.base.Constant;
+import com.zsw.base.ErpConstants;
 import com.zsw.base.DaoException;
 import com.zsw.base.Result;
 import com.zsw.base.ServiceException;
@@ -11,12 +11,10 @@ import com.zsw.busi.entity.GoodsDetail;
 import com.zsw.busi.service.GoodsService;
 import com.zsw.util.Empty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,14 +56,14 @@ public class GoodsServiceImpl implements GoodsService {
                     }
                 }
             } else {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setCode("已存在该型号，请走修改！");
                 return res;
             }
 
             //日志记录
 
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException(e);
@@ -81,14 +79,14 @@ public class GoodsServiceImpl implements GoodsService {
 
             //不存在则返回
             if (Empty.isEmpty(oldGoods)) {
-                res.setCode( Constant.RESULT_FAILURE);
+                res.setCode( ErpConstants.RESULT_FAILURE);
                 res.setMsg("不存在该型号！");
                 return res;
             }
             goodsDao.updGoods(goods);
 
             //记录日志
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,13 +103,13 @@ public class GoodsServiceImpl implements GoodsService {
 
             //不存在该型号则返回
             if (Empty.isEmpty(oldGoods)) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("不存在该型号！");
                 return res;
             }
 
             //将该型号变为删除状态
-            oldGoods.setState(Constant.STATE_DELELED);
+            oldGoods.setState(ErpConstants.STATE_DELELED);
             goodsDao.updGoods(oldGoods);
 
             //查询是否有详细信息
@@ -119,14 +117,14 @@ public class GoodsServiceImpl implements GoodsService {
             //有则将关联的批次状态置为删除
             if (!Empty.isEmpty(details)) {
                 for (GoodsDetail detail : details) {
-                    detail.setState(Constant.STATE_DELELED);
+                    detail.setState(ErpConstants.STATE_DELELED);
                     goodsDetailDao.updateGoodsDetail(detail);
                 }
             }
 
             //日志
 
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
 
         } catch (Exception e) {
             e.printStackTrace();

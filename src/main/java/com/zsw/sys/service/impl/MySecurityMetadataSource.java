@@ -1,7 +1,6 @@
 package com.zsw.sys.service.impl;
 
-import com.sun.deploy.association.utility.AppConstants;
-import com.zsw.base.Constant;
+import com.zsw.base.ErpConstants;
 import com.zsw.sys.entity.Permission;
 import com.zsw.sys.service.PermissionService;
 import com.zsw.util.Empty;
@@ -83,7 +82,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
 			 * 如果系统有特殊要求，系统管理员角色也需要手动配置权限，则这里需要注释
 			 */
             atts = new ArrayList<String>();
-            atts.add("ROLE_" + Constant.ROLE_ADMIN);
+            atts.add("ROLE_" + ErpConstants.ROLE_ADMIN);
             resourceMap.put("/**", atts);
 
         } catch (Exception e) {
@@ -121,7 +120,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
         // 根据比对的角色编号创建权限
         if (roleCodes.isEmpty()) {
             // 如果没有角色，则设置为系统管理员可以访问
-            // result.add(new SecurityConfig(AppConstants.ROLE_ADMIN));
+            result.add(new SecurityConfig(ErpConstants.ROLE_ADMIN));
         } else {
             for (String roleCode : roleCodes) {
                 result.add(new SecurityConfig(roleCode));

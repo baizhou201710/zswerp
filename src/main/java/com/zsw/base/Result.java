@@ -48,6 +48,28 @@ public class Result implements Serializable{
         this.content = content;
     }
 
+    public Result(String code) {
+        this.code = code;
+    }
+
+    public Result(String code, Object content) {
+        this.code = code;
+        this.content = content;
+    }
+
+    public Result(String code, String msg, Object content) {
+
+        this.code = code;
+        this.msg = msg;
+        this.content = content;
+    }
+
+    public Result(String code, String msg) {
+
+        this.code = code;
+        this.msg = msg;
+    }
+
     @Override
     public String toString() {
         return "Result{" +

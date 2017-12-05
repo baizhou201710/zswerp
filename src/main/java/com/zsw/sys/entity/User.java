@@ -19,7 +19,9 @@ public class User extends BaseEntity {
 
     private String password;
 
+    private String realname;
     private List<Role> roles;
+
 
 
     public User() {
@@ -50,6 +52,14 @@ public class User extends BaseEntity {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     //获取角色名

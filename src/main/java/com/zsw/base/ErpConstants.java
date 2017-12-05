@@ -5,7 +5,7 @@ package com.zsw.base;
  * Description
  * Date 2017/11/15 9:21
  */
-public class Constant {
+public class ErpConstants {
 
     /**
      * 成功-0

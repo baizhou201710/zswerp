@@ -74,7 +74,7 @@
     </insert>
 
     <select id="getRolesByUser" parameterType="String" resultMap="roleInfo">
-        select r.id,r.`code`,r.`name` from erp_st_role r
+        select r.id,r.code,r.name from erp_st_role r
           left join erp_st_user_role t on r.id=t.role_id where t.user_id=#{userId}
     </select>
 

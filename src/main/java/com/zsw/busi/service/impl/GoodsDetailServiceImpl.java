@@ -1,6 +1,6 @@
 package com.zsw.busi.service.impl;
 
-import com.zsw.base.Constant;
+import com.zsw.base.ErpConstants;
 import com.zsw.base.Result;
 import com.zsw.base.ServiceException;
 import com.zsw.busi.dao.GoodsDao;
@@ -9,15 +9,10 @@ import com.zsw.busi.entity.Goods;
 import com.zsw.busi.entity.GoodsDetail;
 import com.zsw.busi.service.GoodsDetailService;
 import com.zsw.sys.dao.BaseDao;
-import com.zsw.sys.service.BaseService;
 import com.zsw.util.Empty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Author baizhou201710@gmail.com
@@ -52,14 +47,14 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             Goods goods = goodsDao.getByGoodsId(goodsDetail.getGoodsId());
 
             if (Empty.isEmpty(goods)) {
-                res.setCode(Constant.RESULT_SUCCESS);
+                res.setCode(ErpConstants.RESULT_SUCCESS);
                 res.setMsg("找不到该批次的型号,请先建立该型号资料！");
                 return res;
             }
             //存在该型号则新入库该批次
             goodsDetailDao.addGoodsDetail(goodsDetail);
 
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
             res.setMsg("新增GoodsDetail成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,19 +70,19 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             //检验是否存在该批次
             GoodsDetail detail = goodsDetailDao.getById(id);
             if (Empty.isEmpty(detail)) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("该型号不存在该批次，无法出库该批次！");
                 return res;
             }
             if (detail.getStock() < quantity) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("该批次库存为" + detail.getStock() + ",无法出库" + quantity + "!");
                 return res;
             }
             //减库存
             detail.setStock(detail.getStock() - quantity);
             goodsDetailDao.updateGoodsDetail(detail);
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
             res.setMsg("出库成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,7 +98,7 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             //校验是否存在该批次
             GoodsDetail oldDetail = goodsDetailDao.getById(detail.getId());
             if (Empty.isEmpty(oldDetail)) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("不存在该批次，无法修改！");
                 return res;
             }
@@ -145,7 +140,7 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             goodsDetailDao.updateGoodsDetail(oldDetail);
             //日志记录
 
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
             res.setMsg("修改成功！");
 
         } catch (Exception e) {
@@ -169,19 +164,19 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             //检验是否存在该批次
             GoodsDetail detail = goodsDetailDao.getById(id);
             if (Empty.isEmpty(detail)) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("该型号不存在该批次，校正库存");
                 return res;
             }
             if (quantity < 0) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("库存必须大于等于0!");
                 return res;
             }
             //减库存
             detail.setStock(quantity);
             goodsDetailDao.updateGoodsDetail(detail);
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
             res.setMsg("出库校正成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,12 +197,12 @@ public class GoodsDetailServiceImpl implements GoodsDetailService {
             //检验是否存在该批次
             GoodsDetail detail = goodsDetailDao.getById(id);
             if (Empty.isEmpty(detail)) {
-                res.setCode(Constant.RESULT_FAILURE);
+                res.setCode(ErpConstants.RESULT_FAILURE);
                 res.setMsg("该型号不存在该批次，无法删除！");
                 return res;
             }
             goodsDetailDao.del(id);
-            res.setCode(Constant.RESULT_SUCCESS);
+            res.setCode(ErpConstants.RESULT_SUCCESS);
             res.setMsg("删除成功");
         } catch (Exception e) {
             e.printStackTrace();

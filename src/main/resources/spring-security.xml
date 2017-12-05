@@ -8,41 +8,108 @@
 					http://www.springframework.org/schema/security
 					http://www.springframework.org/schema/security/spring-security.xsd">
 
+
     <!-- 配置不过滤的资源（静态资源及登录相关） -->
+    <security:http pattern="/login**" security="none" />
     <security:http pattern="/resources/**" security="none"></security:http>
-
-    <security:http pattern="/WEB-INF/login.jsp" security="none"></security:http>
-    <security:http pattern="/getCode" security="none" /><!-- 不过滤验证码 -->
+   <!-- <security:http pattern="/WEB-INF/page/login.jsp" security="none"></security:http>-->
+    <security:http pattern="/getCode" security="none"/><!-- 不过滤验证码 -->
     <security:http pattern="/test/**" security="none"></security:http><!-- 不过滤测试内容 -->
+    <security:http use-expressions="false" entry-point-ref="authenticationProcessingFilterEntryPoint">
 
-    <security:authentication-manager alias="authenticationManager" >
+        <security:remember-me/>
+
+        <security:session-management invalid-session-url="/login?stat=sessionout">
+            <!--控制一个账号只允许在一个地方登录
+           <s:concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>-->
+            <security:concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
+        </security:session-management>
+
+        <!-- 替换默认的LogoutFilter 	-->
+        <security:custom-filter ref="logoutFilter" position="LOGOUT_FILTER"/>
+        <security:custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER"/>
+        <!--<security:custom-filter ref="autoLoginFilter" after="SECURITY_CONTEXT_FILTER"/>-->
+        <security:custom-filter ref="securityFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
+        <!--
+        -->
+        <security:access-denied-handler ref="myAccessDeniedHandler"/>
+    </security:http>
+
+
+    <security:authentication-manager alias="authenticationManager">
         <!-- 加入开发人员自定义的Provider -->
         <security:authentication-provider user-service-ref="myUserDetailsServiceImpl">
         </security:authentication-provider>
     </security:authentication-manager>
-    <!--&lt;!&ndash; 未登录的切入点 &ndash;&gt;
-    <bean id="authenticationProcessingFilterEntryPoint"  class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <property name="loginFormUrl" value="/login.htm" />
-    </bean>-->
-    
-    <security:http auto-config="true">
 
-      <!--  <security:intercept-url pattern="/app.jsp" access="ROLE_SERVICE"/>
-        <security:intercept-url pattern="/**" access="ROLE_ADMIN"/>-->
 
-        <security:form-login login-page="/WEB-INF/login.jsp" authentication-failure-url="/WEB-INF/login.jsp"
-                        default-target-url="/WEB-INF/page/index.jsp"/>
+    <!-- 未登录的切入点 -->
+    <bean id="authenticationProcessingFilterEntryPoint"
+          class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <property name="loginFormUrl" value="/login"/>
+    </bean>
 
-    </security:http>
 
-    <security:authentication-manager>
-        <security:authentication-provider>
-            <security:user-service >
-                <security:user name="admin" password="admin" authorities="ROLE_ADMIN"/>
-            </security:user-service>
-        </security:authentication-provider>
-    </security:authentication-manager>
-    <bean id="myUserDetailsServiceImpl" class="com.zsw.sys.service.impl.MyUserDetailsService" />
-    <bean id="myAccessDecisionManager" class="com.zsw.sys.service.impl.MyAccessDecisionManager" />
+    <!-- 登录验证器 -->
+    <bean id="loginFilter" class="com.zsw.framework.filter.MyUsernamePasswordCaptchaAuthenticationFilter">
+        <!-- 处理登录 -->
+        <property name="usernameParameter" value="username"/>
+        <property name="passwordParameter" value="password"/>
+        <property name="filterProcessesUrl" value="/j_spring_security_check"></property>
+        <property name="authenticationManager" ref="authenticationManager"></property>
+        <!-- 是否开启登陆验证码校验 -->
+        <property name="authenticationSuccessHandler">
+            <!-- 自定义登录成功后的处理handler -->
+            <bean class="com.zsw.framework.handler.LoginAuthenticationSuccessHandler">
+                <!-- 登录成功后的默认url -->
+                <property name="defaultTargetUrl" value="/index"/>
+            </bean>
+        </property>
+        <property name="authenticationFailureHandler">
+            <bean class="com.zsw.framework.handler.LoginAuthenticationFailureHandler">
+                <!-- 登录失败后的默认Url -->
+                <property name="defaultFailureUrl" value="/login?stat=error"/>
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <!-- 处理退出的虚拟url -->
+        <property name="filterProcessesUrl" value="/j_spring_security_logout"/>
+        <!-- 退出处理成功后的默认显示url -->
+        <constructor-arg index="0" value="/login?stat=logout"/>
+        <constructor-arg index="1">
+            <!-- 退出成功后的handler列表 -->
+            <array>
+                <bean id="securityContextLogoutHandler"
+                      class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+                <!-- 加入了开发人员自定义的退出成功处理 -->
+                <bean id="customLogoutSuccessHandler" class="com.zsw.framework.handler.MyLogoutHandler"/>
+            </array>
+        </constructor-arg>
+    </bean>
+
+    <!-- 开发时自动登录的filter -->
+   <!-- <bean id="autoLoginFilter" class="com.zsw.framework.filter.MyAutoLoginFilter"/>-->
+
+    <!-- 认证过滤器 -->
+    <bean id="securityFilter" class="com.zsw.framework.filter.MySecurityFilter">
+        <!-- 用户是否拥有所请求资源的权限 -->
+        <property name="accessDecisionManager" ref="myAccessDecisionManager"/>
+        <!-- 用户拥有的权限 -->
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <!-- 资源与权限对应关系 -->
+        <property name="securityMetadataSource" ref="mySecurityMetadataSource"/>
+
+    </bean>
+
+
+    <bean id="myUserDetailsServiceImpl" class="com.zsw.sys.service.impl.MyUserDetailsService"/>
+    <bean id="myAccessDecisionManager" class="com.zsw.sys.service.impl.MyAccessDecisionManager"/>
     <bean id="mySecurityMetadataSource" class="com.zsw.sys.service.impl.MySecurityMetadataSource"/>
+
+    <bean id="myAccessDeniedHandler" class="com.zsw.framework.handler.MyAccessDeniedHandler">
+        <property name="errorPage" value="/WEB-INF/jsp/error/403.jsp"></property>
+    </bean>
 </beans>

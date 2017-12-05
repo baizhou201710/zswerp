@@ -1,12 +1,9 @@
 package com.zsw.sys.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.zsw.base.Constant;
 import com.zsw.base.Result;
-import com.zsw.base.ServiceException;
 import com.zsw.sys.entity.User;
 import com.zsw.sys.service.UserService;
-import com.zsw.util.Empty;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

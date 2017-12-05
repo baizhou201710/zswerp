@@ -1,6 +1,7 @@
 package com.zsw.sys.service.impl;
 
 import com.zsw.base.DaoException;
+import com.zsw.framework.entity.SessionUser;
 import com.zsw.sys.dao.RoleDao;
 import com.zsw.sys.dao.UserDao;
 import com.zsw.sys.entity.Role;
@@ -46,6 +47,7 @@ public class MyUserDetailsService implements UserDetailsService {
         List<Role> roleList = null;
         try {
             roleList = roleDao.getRolesByUser(user.getId());
+            roles.addAll(roleList);
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -64,7 +66,7 @@ public class MyUserDetailsService implements UserDetailsService {
         boolean accountNonExpired = true;
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
-        User userDetails = new User(user.getUsername(), user.getPassword(), enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, grantedAuths);
+        User userDetails = new SessionUser(user, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, grantedAuths,roles);
 
         return userDetails;
     }

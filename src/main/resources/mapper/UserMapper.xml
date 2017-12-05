@@ -83,5 +83,8 @@
         AND
         u.username = #{username}
     </select>
+    <select id="getByUsername" parameterType="String" resultMap="userInfo">
+        select * from erp_st_user where username=#{username}
+    </select>
 
 </mapper>
