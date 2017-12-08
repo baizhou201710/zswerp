@@ -1,6 +1,5 @@
 package com.zsw.sys.service;
 
-import com.zsw.base.DaoException;
 import com.zsw.base.ServiceException;
 import com.zsw.sys.entity.Permission;
 
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 public interface PermissionService {
 
-    void insert(Permission permission);
+    void insert(Permission permission) throws ServiceException;
 
     /**
      * 获取所有的权限与角色关系
@@ -53,4 +52,38 @@ public interface PermissionService {
      * @throws ServiceException
      */
     int countByCondition(Map map) throws ServiceException;
+
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
+    Permission getById(String id) throws ServiceException;
+
+    /**
+     * 修改
+     *
+     * @param permission
+     * @throws ServiceException
+     */
+    void update(Permission permission) throws ServiceException;
+
+    /**
+     * 彻底删除
+     *
+     * @param id
+     * @throws ServiceException
+     */
+    void delete(String id) throws ServiceException;
+
+    /**
+     * 修改状态
+     *
+     * @param state
+     * @param id
+     * @throws ServiceException
+     */
+    void updateState(String state, String id) throws ServiceException;
 }

@@ -9069,6 +9069,30 @@ TODO:
     margin-left: -@modal-lg/2;
   }*/
 }
+
+.am-modal-dialog-grey {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: 270px;
+    max-width: 100%;
+    border: solid 8px #0ca2e7;
+
+    box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    -moz-border-radius: 15px;
+    background-clip: padding-box;
+    margin-bottom: 20px;
+    background-color: #EBEFF2;
+    /*@media @large-up {
+      width: @modal-lg;
+      margin-left: -@modal-lg/2;
+    }*/
+}
+
 @media only screen and (min-width:641px) {
   .am-modal-dialog {
     width: 540px;

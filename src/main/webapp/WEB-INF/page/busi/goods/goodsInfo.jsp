@@ -150,13 +150,11 @@
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/jquery-2.1.0.js" ></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js" ></script>
-<script type="text/javascript" src="${contextPath}/resources/util/urlUtil.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/util/util.js"></script>
 <%--
 --%>
 <script>
-    debugger
-    var id=urlUtil.getUrlParam("id");//goodsId
-    console.info(id);
+    var id = util.getUrlParam("id");//goodsId
     var hasDetail="no";//是否有入库操作
     $(document).ready(function(){
 

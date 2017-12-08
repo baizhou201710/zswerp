@@ -94,12 +94,11 @@
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/jquery-2.1.0.js" ></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js" ></script>
-<script type="text/javascript" src="${contextPath}/resources/util/urlUtil.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/util/util.js"></script>
 <%--
 --%>
 <script>
-    debugger
-    var goodsId=urlUtil.getUrlParam("goodsId");//goodsId
+    var goodsId = util.getUrlParam("goodsId");//goodsId
     console.info(goodsId);
     $(document).ready(function () {
         //初始化赋值

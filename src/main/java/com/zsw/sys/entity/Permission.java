@@ -102,6 +102,7 @@ public class Permission extends BaseEntity {
         this.chlidPermissions = chlidPermissions;
     }
 
+
     @Override
     public String toString() {
         return "Permission{" +

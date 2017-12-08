@@ -12,8 +12,28 @@ import java.util.Map;
  * Date 2017/11/13 16:51
  */
 public interface PermissionDao  {
-     void insert(Permission permission);
+    /**
+     * 新增
+     *
+     * @param permission
+     */
+    void insert(Permission permission) throws DaoException;
 
+    /**
+     * 更新
+     *
+     * @param permission
+     * @throws DaoException
+     */
+    void update(Permission permission) throws DaoException;
+
+    /**
+     * 彻底删除
+     *
+     * @param id
+     * @throws DaoException
+     */
+    void del(String id) throws DaoException;
     /**
      * 获取所有的权限与角色关系
      * @return
@@ -54,5 +74,14 @@ public interface PermissionDao  {
      * @return
      * @throws DaoException
      */
-     int countByCondition(Map map)throws DaoException;
+    int countByCondition(Map map) throws DaoException;
+
+    /**
+     * 修改状态
+     *
+     * @param state
+     * @param id
+     * @throws DaoException
+     */
+    void updateState(String state, String id) throws DaoException;
 }

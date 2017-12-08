@@ -4,9 +4,15 @@
 
     <resultMap type="com.zsw.sys.entity.Permission" id="permissionInfo">
         <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
         <result property="token" column="token"/>
         <result property="url" column="url"/>
+        <result property="level" column="level"/>
+        <result property="type" column="type"/>
         <result property="description" column="description"/>
+        <result property="state" column="state"/>
+        <result property="orderNum" column="order_num"/>
         <result property="creator" column="creator"/>
         <result property="createTime" column="create_time"/>
         <result property="modifier" column="modifier"/>
@@ -27,16 +33,33 @@
         insert into erp_st_permission
         <trim prefix="(" suffix=")" suffixOverrides=",">
             id,
+            <if test="parentId!=null">
+                parent_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
             <if test="token != null">
                 token,
             </if>
             <if test="url != null">
                 url,
             </if>
+            <if test="level != null">
+                level,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
             <if test="description != null">
                 description,
             </if>
-
+            <if test="state != null">
+                state,
+            </if>
+            <if test="orderNum != null">
+                order_num,
+            </if>
             <if test="creator != null">
                 creator,
             </if>
@@ -50,19 +73,34 @@
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-
             #{id},
-
+            <if test="parentId!=null">
+                #{parentId},
+            </if>
+            <if test="name != null">
+                #{name},
+            </if>
             <if test="token != null">
                 #{token},
             </if>
             <if test="url != null">
                 #{url},
             </if>
+            <if test="level != null">
+                #{level},
+            </if>
+            <if test="type != null">
+                #{type},
+            </if>
             <if test="description != null">
                 #{description},
             </if>
-
+            <if test="state != null">
+                #{state},
+            </if>
+            <if test="orderNum != null">
+                #{orderNum},
+            </if>
             <if test="creator != null">
                 #{creator},
             </if>
@@ -77,6 +115,25 @@
             </if>
         </trim>
     </insert>
+    <update id="update" parameterType="com.zsw.sys.entity.Permission">
+        update erp_st_permission
+         set  parent_id=#{parentId},
+              name=#{name},
+              token=#{token},
+              url=#{url},
+              level=#{level},
+              type=#{type},
+              description=#{description},
+              state=#{state},
+              modifier=#{modifier},
+              modified_time=sysdate()
+          where id=#{id}
+
+    </update>
+
+    <delete id="del" parameterType="String">
+        delete from erp_st_permission where id=#{id}
+    </delete>
 
     <!-- 初始化获取所有的角色与权限-->
     <select id="getAllResAndRole" resultMap="permissionInfo">
@@ -110,7 +167,7 @@
 
     <!--会根据id查询下级-->
     <select id="getChildById" parameterType="String" resultMap="permissionInfo">
-        select * from erp_st_permission p where p.parent_id=#{id}
+        select * from erp_st_permission p where p.parent_id=#{id} and p.state='0'
     </select>
 
     <!--根据id查询-->
@@ -128,6 +185,7 @@
         <if test="parentId!=null">
             and parent_id=#{parentId}
         </if>
+        and state !='3'
         order by level,order_num,name
         limit #{limit} ,#{pageSize}
 
@@ -143,6 +201,12 @@
         <if test="parentId!=null">
             and parent_id=#{parentId}
         </if>
+        and state !='3'
 
     </select>
+    <!--修改状态-->
+    <update id="updateState">
+        update erp_st_permission set state=#{0} where id=#{1}
+
+    </update>
 </mapper>

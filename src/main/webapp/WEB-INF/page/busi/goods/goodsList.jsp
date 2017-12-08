@@ -129,7 +129,9 @@
                 <div class="am-u-sm-12 am-u-md-6 ">
                     <div class="am-btn-toolbar" >
                         <%--<div class="am-btn-group am-btn-group-xs ">--%>
-                        <button type="button" class="am-btn am-btn-xs am-btn-primary " data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 800, height: 540}"><span class="am-icon-plus"></span> 新增</button>
+                        <button type="button" class="am-btn am-btn-xs am-btn-primary " id="add"><span
+                                class="am-icon-plus"></span> 新增
+                        </button>
                         <button type="button" class="am-btn am-btn-xs am-btn-primary " onclick="save()"><span class="am-icon-save"></span> 保存</button>
                         <button type="button" class="am-btn am-btn-xs am-btn-primary "><span class="am-icon-archive"></span> 审核</button>
                         <button type="button" class="am-btn am-btn-xs am-btn-primary "><span class="am-icon-trash-o"></span> 删除</button>
@@ -177,10 +179,6 @@
                                 <ul class="am-pagination am-pagination-centered">
                                     <li class="am-disabled" id="perPage"><a href="#"> << Prev</a></li>
                                     <li class="am-active" id="page1"><a href="#" id="pagelink1">1</a></li>
-                                    <li id="page2"><a href="#" id="pagelink2">2</a></li>
-                                    <li id="page3"><a href="#" id="pagelink3">3</a></li>
-                                    <li id="page4"><a href="#" id="pagelink4">4</a></li>
-                                    <li id="page5"><a href="#" id="pagelink5">5</a></li>
                                     <li id="nextPage"><a href="#">Next >> </a></li>
                                 </ul>
                             </div>
@@ -210,7 +208,7 @@
             <a href="javascript: void(0)" class="am-close am-close-alt am-close-spin" data-am-modal-close>&times;</a>
         </div>
         <div class="am-modal-bd">
-            <iframe id="goodsInfo" width="700" height="400" frameborder="0" scrolling="auto"></iframe>
+            <iframe id="goodsInfo" frameborder="0" scrolling="auto"></iframe>
         </div>
         <div class="am-u-sm-5 am-u-md-3  am-fr" style="padding-top: 20px">
             <div class="am-input-group ">
@@ -312,6 +310,16 @@
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js" ></script>
 <script>
+    //设置iframe大小
+    var pageHight = $(window).height();
+    var pageWidth = $(window).width();
+    $('#goodsInfo').width(pageWidth * 0.55);
+    $('#goodsInfo').height(pageHight * 0.55);
+
+    $('#inStockInfo').width(pageWidth * 0.5);
+    $('#inStockInfo').height(pageHight * 0.4);
+    $('#add').attr("data-am-modal", "{target: '#doc-modal-1', closeViaDimmer: 0, width:" + pageWidth * 0.6 + ", height:" + pageHight * 0.7 + "}");
+
     var pageSize=10;//默认每页10条数据
     var pageNo=1;//当前页码，默认第一页
     var tolPgae=1;//总页数，默认一页
@@ -325,10 +333,6 @@
             pageSize=10;
             pageNo=1;
             $('#pagelink1').html(1);
-            $('#pagelink2').html(2);
-            $('#pagelink3').html(3);
-            $('#pagelink4').html(4);
-            $('#pagelink5').html(5);
             initPage();
             queryGoodsList(pageNo,pageSize);
         });
@@ -373,50 +377,6 @@
         });
 
 
-        //page2
-        $('#page2').click(function(){
-            if($(this).hasClass('am-disabled')){
-                return;
-            }
-            initPage();
-            pageNo=parseInt($('#pagelink2').html());
-            queryGoodsList(pageNo,pageSize);
-        });
-
-
-        //page3
-        $('#page3').click(function(){
-            if($(this).hasClass('am-disabled')){
-                return;
-            }
-            initPage();
-            pageNo=parseInt($('#pagelink3').html());
-            queryGoodsList(pageNo,pageSize);
-        });
-
-
-        //page4
-        $('#page4').click(function(){
-            if($(this).hasClass('am-disabled')){
-                return;
-            }
-            initPage();
-            pageNo=parseInt($('#pagelink4').html());
-            queryGoodsList(pageNo,pageSize);
-        });
-
-
-        //page5
-        $('#page5').click(function(){
-            if($(this).hasClass('am-disabled')){
-                return;
-            }
-            initPage();
-            pageNo=parseInt($('#pagelink5').html());
-            queryGoodsList(pageNo,pageSize);
-        });
-
-
     });
 
 
@@ -435,10 +395,12 @@
                 if (data) {
                     if (data.code == 0) {
                         //清除原有数据列表
+                        $("#contents").empty();
+                        $('#pagelink1').html(pageNo);
                         $("#tolRecord").html(data.content.page.tolRecord);
                         $("#tolPage").html(data.content.page.tolPage);
                         tolPgae=data.content.page.tolPage;
-                        $("#contents").empty();
+
                         if (data.content && data.content.goodsList) {
                             var goodsList = data.content.goodsList;
 
@@ -446,7 +408,7 @@
                                 var goodId = goodsList[i].id;
                                 tr = ' <tr class=""><td><i class="fa fa-plus-square" style="cursor:pointer" aria-hidden="true" id="i' + goodId + '" onclick="showDetail(\'' + goodId + '\')"></td>' +
                                     '<td>' + (i + 1) + '</td>' +
-                                    '<td><a style="cursor:pointer" data-am-modal="{target: \'#doc-modal-1 \', closeViaDimmer: 0, width: 800, height: 540}"  onclick="setSelgoods(\'' + goodId + '\')">' + goodsList[i].goodsNo + '</a></td>' +
+                                    '<td><a style="cursor:pointer" data-am-modal="{target: \'#doc-modal-1 \', closeViaDimmer: 0, width:' + pageWidth * 0.6 + ', height:' + pageHight * 0.75 + '}"  onclick="setSelgoods(\'' + goodId + '\')">' + goodsList[i].goodsNo + '</a></td>' +
                                     '<td class="am-text-nowrap">' + goodsList[i].brand + '</td>' +
                                     '<td class="am-text-nowrap">' + goodsList[i].packageType + '</td>' +
                                     '<td class="am-text-nowrap">' + goodsList[i].tolStock + '</td>' +
@@ -454,8 +416,8 @@
                                     '<td class="am-text-nowrap">' + goodsList[i].salePrice + '</td>' +
                                     '<td >' + goodsList[i].location + '</td>' +
                                     '<td >' + goodsList[i].description + '</td>' +
-                                    '<td><a class="am-btn am-btn-default am-btn-xs am-text-secondary" data-am-modal="{target: \'#doc-modal-1\', closeViaDimmer: 0, width: 800, height: 540}" onclick="setSelgoods(\'' + goodId + '\')"><span class="am-icon-pencil-square-o"></span> 编辑</a></td>'+
-                                    '<td><a class="am-btn am-btn-default am-btn-xs am-hide-sm-only" data-am-modal="{target: \'#doc-modal-2\', closeViaDimmer: 0, width: 800, height: 460}" onclick="setSelgoods(\'' + goodId + '\')"><span class="am-icon-copy"></span> 入库</a></td>';
+                                    '<td><a class="am-btn am-btn-default am-btn-xs am-text-secondary" data-am-modal="{target: \'#doc-modal-1\', closeViaDimmer: 0, width: ' + pageWidth * 0.6 + ', height:' + pageHight * 0.75 + '}" onclick="setSelgoods(\'' + goodId + '\')"><span class="am-icon-pencil-square-o"></span> 编辑</a></td>' +
+                                    '<td><a class="am-btn am-btn-default am-btn-xs am-hide-sm-only" data-am-modal="{target: \'#doc-modal-2\', closeViaDimmer: 0, width:' + pageWidth * 0.55 + ', height:' + pageHight * 0.55 + '}" onclick="setSelgoods(\'' + goodId + '\')"><span class="am-icon-pencil-square-o"></span> 入库</a></td>';
                                     if( goodsList[i].tolStock>0 && goodsList[i].goodsDetails && goodsList[i].goodsDetails.length==1){
                                         tr=tr+'<td><a class="am-btn am-btn-default am-btn-xs am-hide-sm-only"  onclick="outStock(\'' + goodsList[i].goodsDetails[0].id + '\')"><span class="am-icon-copy"></span> 出库</a></td>'+
                                             '<td><a class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" onclick="delGoods(\'' + goodId + '\')"><span class="am-icon-trash-o"></span> 删除</a></td></tr>';
@@ -496,75 +458,11 @@
 
 
                             //页码排版
-                            if(tolPgae<=5){
-                                if(tolPgae<=1){
-                                    $('#perPage').addClass('am-disabled');
-                                    $('#nextPage').addClass('am-disabled');
-
-                                    $('#page1').nextAll().addClass('am-disabled');
-                                }else if(tolPgae==2){
-                                    $("#page2").nextAll().addClass('am-disabled');
-                                    $('#nextPage').removeClass('am-disabled');
-                                    if(pageNo==2){
-                                        $("#page1").removeClass('am-active');
-                                        $("#page2").addClass('am-active');
-
-                                        $('#perPage').removeClass('am-disabled');
-                                        $('#nextPage').addClass('am-disabled');
-                                    }
-
-                                }else if(tolPgae==3){
-                                    $("#page3").nextAll().addClass('am-disabled');
-                                    $('#nextPage').removeClass('am-disabled');
-                                    if(pageNo==2){
-                                        $("#page1").removeClass('am-active');
-                                        $("#page2").addClass('am-active');
-
-                                        $('#perPage').removeClass('am-disabled');
-                                        $('#nextPage').removeClass('am-disabled');
-                                    }else if(pageNo==3){
-                                        $("#page1").removeClass('am-active');
-                                        $("#page3").addClass('am-active');
-
-                                        $('#perPage').removeClass('am-disabled');
-                                        $('#nextPage').addClass('am-disabled');
-                                    }
-                                }
-                            }else{//大于5页
-                                if(pageNo==2){
-                                    $("#page1").removeClass('am-active');
-                                    $("#page2").addClass('am-active');
-                                    $('#perPage').removeClass('am-disabled');
-                                }else if(pageNo>=3){
-
-                                    $("#page1").removeClass('am-active');
-
-                                    if(pageNo-3>=1){
-                                        $('#perPage').removeClass('am-disabled');
-                                    }
-                                    if(tolPgae-pageNo>=3){
-                                        $('#pagelink1').html(pageNo-2);
-                                        $('#pagelink2').html(pageNo-1);
-                                        $('#pagelink3').html(pageNo);
-                                        $('#pagelink4').html(pageNo+1);
-                                        $('#pagelink5').html(pageNo+2);
-                                        $("#page3").addClass('am-active');
-                                    }else if(tolPgae-pageNo==2){
-                                        $('#pagelink1').html(pageNo-2);
-                                        $('#pagelink2').html(pageNo-1);
-                                        $('#pagelink3').html(pageNo);
-                                        $('#pagelink4').html(pageNo+1);
-                                        $('#pagelink5').html(pageNo+2);
-                                        $("#page3").addClass('am-active');
-                                        $('#nextPage').addClass('am-disabled');
-                                    }else if(tolPgae-pageNo==1){
-                                        $("#page4").addClass('am-active');
-                                        $('#nextPage').addClass('am-disabled');
-                                    }else if(tolPgae-pageNo==0){
-                                        $("#page5").addClass('am-active');
-                                        $('#nextPage').addClass('am-disabled');
-                                    }
-                                }
+                            if (pageNo > 1) {
+                                $('#perPage').removeClass('am-disabled');
+                            }
+                            if (pageNo < tolPgae) {
+                                $('#nextPage').removeClass('am-disabled');
                             }
                         }
 
@@ -600,12 +498,8 @@
     //每次查询都初始化分页块
     initPage=function () {
         $('#perPage').addClass('am-disabled');
-        $('#nextPage').removeClass('am-disabled');
+        $('#nextPage').addClass('am-disabled');
         $('#page1').removeClass('am-disabled').addClass('am-active');
-        $('#page2').removeClass('am-disabled').removeClass('am-active');
-        $('#page3').removeClass('am-disabled').removeClass('am-active');
-        $('#page4').removeClass('am-disabled').removeClass('am-active');
-        $('#page5').removeClass('am-disabled').removeClass('am-active');
     }
 
     //iframe取消按钮关闭iframe窗口
@@ -615,7 +509,6 @@
 
     //绑定新增修改遮罩层open事件
     $('#doc-modal-1').on('open.modal.amui', function(){
-        debugger
         window.parent.$('#goodsInfo').attr("src", "${contextPath}/goods/goodsInfo?id="+selGoodsId);
         //  调用完成后清空
         selGoodsId="";
@@ -625,7 +518,6 @@
     //绑定入库页面遮罩层open事件
     $('#doc-modal-2').on('open.modal.amui', function(){
         if(selGoodsId){
-            debugger
             window.parent.$('#inStockInfo').attr("src", "${contextPath}/goods/inStockInfo?goodsId="+selGoodsId);
             //  调用完成后清空
             selGoodsId="";

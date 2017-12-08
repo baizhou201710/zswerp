@@ -3,9 +3,9 @@ package com.zsw.sys.service.impl;
 import com.zsw.base.DaoException;
 import com.zsw.base.ErpConstants;
 import com.zsw.base.ServiceException;
-import com.zsw.sys.service.PermissionService;
 import com.zsw.sys.dao.PermissionDao;
 import com.zsw.sys.entity.Permission;
+import com.zsw.sys.service.PermissionService;
 import com.zsw.util.Empty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,14 @@ import java.util.Map;
 public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private PermissionDao permissionDao;
-    public void insert(Permission permission) {
-        permissionDao.insert(permission);
+
+    public void insert(Permission permission) throws ServiceException {
+        try {
+            permissionDao.insert(permission);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -68,7 +74,7 @@ public class PermissionServiceImpl implements PermissionService {
             }
         } catch (DaoException e) {
             e.printStackTrace();
-            throw new ServiceException();
+            throw new ServiceException(e);
 
         }
         return permissions;
@@ -87,7 +93,7 @@ public class PermissionServiceImpl implements PermissionService {
             permissions= permissionDao.getChildById(id);
         } catch (DaoException e) {
             e.printStackTrace();
-            throw new ServiceException();
+            throw new ServiceException(e);
         }
         return permissions;
     }
@@ -105,7 +111,7 @@ public class PermissionServiceImpl implements PermissionService {
             permissions=permissionDao.getByCondition(map);
         } catch (DaoException e) {
             e.printStackTrace();
-            throw new ServiceException();
+            throw new ServiceException(e);
         }
         return permissions;
     }
@@ -123,8 +129,72 @@ public class PermissionServiceImpl implements PermissionService {
             count= permissionDao.countByCondition(map);
         } catch (DaoException e) {
             e.printStackTrace();
-            throw new ServiceException();
+            throw new ServiceException(e);
         }
         return count;
+    }
+
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return
+     * @throws ServiceException
+     */
+    public Permission getById(String id) throws ServiceException {
+        Permission permission = null;
+        try {
+            permission = permissionDao.getById(id);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+        return permission;
+    }
+
+    /**
+     * 修改
+     *
+     * @param permission
+     * @throws ServiceException
+     */
+    public void update(Permission permission) throws ServiceException {
+        try {
+            permissionDao.update(permission);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * 彻底删除
+     *
+     * @param id
+     * @throws ServiceException
+     */
+    public void delete(String id) throws ServiceException {
+        try {
+            permissionDao.del(id);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
+    }
+
+    /**
+     * 修改状态
+     *
+     * @param state
+     * @param id
+     * @throws ServiceException
+     */
+    public void updateState(String state, String id) throws ServiceException {
+        try {
+            permissionDao.updateState(state, id);
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new ServiceException(e);
+        }
     }
 }

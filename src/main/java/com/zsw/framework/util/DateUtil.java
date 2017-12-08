@@ -34,6 +34,7 @@ public class DateUtil{
         cal.roll(Calendar.DAY_OF_MONTH, -1);
         return cal.getTime();
     }
+
     /**
      * 取得某天所在周的最后一天
      */

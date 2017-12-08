@@ -27,6 +27,6 @@ public class PermissionServiceTest extends SpringCaseTest{
         /*permission.setRoleId("admin");*/
         permission.setDescription("this is you permission188821");
         System.out.println(permission.toString());
-        permissionService.insert(permission);
+        //permissionService.insert(permission);
     }
 }

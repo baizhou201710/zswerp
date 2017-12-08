@@ -12,7 +12,7 @@
     <!-- 配置不过滤的资源（静态资源及登录相关） -->
     <security:http pattern="/login**" security="none" />
     <security:http pattern="/resources/**" security="none"></security:http>
-   <!-- <security:http pattern="/WEB-INF/page/login.jsp" security="none"></security:http>-->
+    <security:http pattern="/WEB-INF/page/base.jsp" security="none"></security:http>
     <security:http pattern="/getCode" security="none"/><!-- 不过滤验证码 -->
     <security:http pattern="/test/**" security="none"></security:http><!-- 不过滤测试内容 -->
     <security:http use-expressions="false" entry-point-ref="authenticationProcessingFilterEntryPoint">

@@ -41,6 +41,10 @@ public class LogInOutController {
     @Resource
     private PermissionService permissionService;
 
+    @RequestMapping(value = "/")
+    public String root() {
+        return "redirect:index";
+    }
     @RequestMapping(value="/login",method= RequestMethod.GET)
     public String loginForm(Model model){
         model.addAttribute("user", new User());
@@ -73,7 +77,6 @@ public class LogInOutController {
     public ModelAndView index(HttpServletRequest request, Model model){
         ModelAndView mav= new ModelAndView();
         //查询用户资源
-        request.getSession();
         SessionUser sessionUser = SpringSecurityUtils.getCurrentUser();
         log.info(sessionUser.getId());
         List<Permission> permissions=new ArrayList<Permission>();
@@ -87,6 +90,7 @@ public class LogInOutController {
         mav.addObject("index");
         return mav;
     }
+
     @RequestMapping(value="/logout",method=RequestMethod.GET)
     public String logout(RedirectAttributes redirectAttributes ){
         //使用权限管理工具进行用户的退出，跳出登录，给出提示信息

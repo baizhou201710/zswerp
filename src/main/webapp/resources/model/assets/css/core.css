@@ -323,6 +323,18 @@ a:focus {
   margin-bottom: 20px;
   background-color: #ffffff;
 }
+
+.card-box-grey {
+  padding: 20px;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin-bottom: 20px;
+  background-color: #c9c9c9;
+}
+
 .card-box .card-drop {
   color: #98a6ad;
   font-size: 20px;

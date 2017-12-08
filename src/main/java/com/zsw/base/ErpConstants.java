@@ -37,7 +37,7 @@ public class ErpConstants {
      */
     public static final String CONTENT = "content";
     /**
-     * 无效状态-1
+     * 禁用状态-1
      */
     public static final String STATE_INVAILD = "1";
     /**
