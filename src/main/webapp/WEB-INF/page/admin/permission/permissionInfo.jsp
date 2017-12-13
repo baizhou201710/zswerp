@@ -21,6 +21,8 @@
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.min.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js"></script>
 <script type="text/javascript" src="${contextPath}/resources/util/util.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.dialog.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/model/assets/tree/amazeui.tree.min.js"></script>
 
 
 <!-- Begin page -->
@@ -213,6 +215,53 @@
 
     });
 
+    //选择上级
+    $('#parentName').focus(function () {
+        var $modaltree = AMUI.dialog.tree({
+            pageHight: 500,
+            pageWidth: 700,
+            id: "my-modal-tree",
+            treeId: "modalTree",
+            title: "权限资源树"
+        });
+
+
+        $modaltree.on('selected.tree.amui', function (e, selected) {
+            selectedId = selected.target.attr.id;
+        });
+
+        var modalTreeDataSource = function (parentData, callback) {
+            debugger
+            var parentId = "";
+            if (parentData && parentData.attr && parentData.attr.id) {
+                parentId = parentData.attr.id;
+            }
+            $.ajax({
+                type: 'get',
+                url: '${contextPath}/sys/permission/tree',
+                dataType: 'json',
+                data: {"id": parentId},
+                success: function (response) {
+
+                    if (response.code == 0) {
+                        callback({data: response.content});
+                    } else {
+                        util.alert(response.msg);
+                    }
+                },
+                error: function () {
+                    util.alert("系统错误,请联系系统管理员！");
+                }
+            });
+        };
+
+        $modaltree.tree({
+            dataSource: modalTreeDataSource,
+            multiSelect: false,
+            cacheItems: false,
+            folderSelect: true
+        })
+    });
 
 </script>
 

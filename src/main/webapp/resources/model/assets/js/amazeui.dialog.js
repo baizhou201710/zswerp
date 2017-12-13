@@ -184,10 +184,10 @@
             dialog.iframe = function (options) {
                 options = options || {};
                 options.title = options.title || '详细信息';
-
+                options.id = options.id || 'my-modal-iframe';
                 var html = [];
 
-                html.push('<div class="am-modal  am-modal-no-btn" tabindex="-1" id="my-modal-iframe" >');
+                html.push('<div class="am-modal  am-modal-no-btn" tabindex="-1" id="' + options.id + '" >');
                 html.push('<div class="am-modal-dialog"  style="display: inline-block; width: auto;">');
                 html.push('<div class="am-modal-hd">' + options.title + '<a href="javascript: void(0)" class="am-close am-close-alt am-close-spin" data-am-modal-close>&times;</a></div>');
                 html.push('<div class="am-modal-bd">');
@@ -211,6 +211,62 @@
                         $(this).remove();
                     });
             };
+
+            /**
+             * 弹出包含树的页面
+             * @param options
+             * @returns {*|EventEmitter|jQuery}
+             */
+            dialog.tree = function (options) {
+                options = options || {};
+                options.title = options.title || '树';
+                options.id = options.id || 'my-modal-tree';
+                options.treeId = options.treeId || 'my-tree';
+                var html = [];
+
+                html.push('<div class="am-modal  am-modal-no-btn" tabindex="-1" id="' + options.id + '" >');
+                html.push('<div class="am-modal-dialog"  style="display: inline-block; width: auto;">');
+                html.push('<div class="am-modal-hd">' + options.title + '<a href="javascript: void(0)" class="am-close am-close-alt am-close-spin" data-am-modal-close>&times;</a></div>');
+                /*html.push('<div class="am-modal-bd">');*/
+                html.push('<div class="content am-cf"><div  style="height: 90%;width:20%"><ul class="am-tree am-tree-folder-select" role="tree" id="' + options.treeId + '">' +
+                    '<li class="am-tree-branch am-hide" data-template="treebranch" role="treeitem" aria-expanded="false">' +
+                    '<div class="am-tree-branch-header">' +
+                    '<button class="am-tree-icon am-tree-icon-caret am-icon-caret-right"><span class="am-sr-only">Open</span>' +
+                    '</button>' +
+                    '<button class="am-tree-branch-name">' +
+                    '<span class="am-tree-icon am-tree-icon-folder"></span>' +
+                    '<span class="am-tree-label"></span>' +
+                    '</button>' +
+                    '</div>' +
+                    '<ul class="am-tree-branch-children" role="group"></ul>' +
+                    '<div class="am-tree-loader"><span class="am-icon-spin am-icon-spinner"></span></div>' +
+                    '</li>' +
+                    '<li class="am-tree-item am-hide" data-template="treeitem" role="treeitem">' +
+                    '<button class="am-tree-item-name">' +
+                    '<span class="am-tree-icon am-tree-icon-item"></span>' +
+                    '<span class="am-tree-label"></span>' +
+                    '</button>' +
+                    '</li></ul></div></div>');
+                /* html.push('</div>');*/
+                /*html.push('<div class="am-u-sm-5 am-u-md-3  am-fr" >');
+                html.push('<div class="am-input-group am-padding-top-sm">');
+                html.push('<button id="cancel" class="am-btn am-btn-default" type="button onclick="cancel()">取消</button>');
+                html.push('<button id="save" class="am-btn am-btn-default am-btn-primary" type="button" onclick="save()">确认</button>');
+                html.push('</div>');
+                html.push('</div>');*/
+                html.push('</div>');
+                html.push('</div>');
+
+                return $(html.join('')).appendTo('body').modal({
+                    closeViaDimmer: false,
+                    width: options.pageWidth,
+                    height: options.pageHight
+                })
+                    .on('closed.modal.amui', function () {
+                        $(this).remove();
+                    });
+            };
+
             module.exports = UI.dialog = dialog;
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

@@ -24,7 +24,7 @@
     <script type="text/javascript" src="${contextPath}/resources/model/assets/js/app.js"></script>
     <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js"></script>
     <script type="text/javascript" src="${contextPath}/resources/model/assets/tree/amazeui.tree.min.js"></script>
-    <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.dialog.min.js"></script>
+    <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.dialog.js"></script>
 
 
 </head>
@@ -180,7 +180,6 @@
         queryList(selectedId, pageNo, pageSize);
     });
     var dataSource = function (parentData, callback) {
-        debugger
         var parentId = "";
         if (parentData && parentData.attr && parentData.attr.id) {
             parentId = parentData.attr.id;
@@ -195,11 +194,11 @@
                 if (response.code == 0) {
                     callback({data: response.content});
                 } else {
-                    myAlert(response.msg);
+                    util.alert(response.msg);
                 }
             },
             error: function () {
-                myAlert("系统错误,请联系系统管理员！");
+                util.alert("系统错误,请联系系统管理员！");
             }
         });
     };
@@ -320,13 +319,13 @@
                         $loading.modal('close');
                     } else {
                         $loading.modal('close');
-                        alert(data.msg);
+                        util.alert(d().msg);
                     }
                 }
             },
             error: function () {
                 $loading.modal('close');
-                alert("系统错误,请联系系统管理员！");
+                util.alert("系统错误,请联系系统管理员！");
             }
         });
     }
@@ -337,14 +336,6 @@
         $('#nextPage').addClass('am-disabled');
         $('#pageNow').removeClass('am-disabled').addClass('am-active');
     }
-
-    //新增修改页面
-    $('#detailPage').on('open.modal.amui', function () {
-        window.parent.$('#permissionInfo').attr("src", "${contextPath}/sys/permission/permissionInfo?id=" + selPermissonId);
-        //  调用完成后清空
-        selPermissonId = "";
-
-    })
 
     //获取点击项的id
     function setselPermission(id) {
@@ -395,7 +386,7 @@
                 success: function (response) {
 
                     if (response.code == 0) {
-                        var $alert = util.alert('保存成功系统错误,请联系系统管理员系统错误,请联系系统管理员系统错误,请联系系统管理员！');
+                        var $alert = util.alert('保存成功！');
                         //自动关闭遮罩层并刷新页面
                         setTimeout(function () {
                                 $loading.modal('close');

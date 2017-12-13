@@ -23,7 +23,7 @@
     <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.min.js"></script>
     <script type="text/javascript" src="${contextPath}/resources/model/assets/js/app.js"></script>
     <script type="text/javascript" src="${contextPath}/resources/model/assets/js/blockUI.js"></script>
-    <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.dialog.min.js"></script>
+    <script type="text/javascript" src="${contextPath}/resources/model/assets/js/amazeui.dialog.js"></script>
     <script type="text/javascript" src="${contextPath}/resources/util/util.js"></script>
 
 </head>

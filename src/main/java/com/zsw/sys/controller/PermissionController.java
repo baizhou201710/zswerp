@@ -102,6 +102,47 @@ public class PermissionController {
     }
 
     /**
+     * 权限与资源树页面
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/treePage")
+    @ResponseBody
+    public String getTreePage(@RequestParam(value = "id", required = false) String id) {
+        Result result = new Result();
+        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
+        if (Empty.isEmpty(id)) {//根节点
+            id = "0";
+        }
+        List<Permission> permissions = null;
+        try {
+            permissions = permissionService.getChildPermission(id);
+            if (!Empty.isEmpty(permissions)) {
+                //封装成树所需要的数据结构
+                for (Permission permission : permissions) {
+                    TreeNode treeNode = new TreeNode();
+                    treeNode.setTitle(permission.getName());
+                    //treeNode.setType("folder");
+                    TreeAttr attr = new TreeAttr();
+                    attr.setId(permission.getId());
+                    treeNode.setAttr(attr);
+
+                    treeNodes.add(treeNode);
+                }
+                result.setContent(treeNodes);
+            }
+            result.setCode(ErpConstants.RESULT_SUCCESS);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            result.setCode(ErpConstants.RESULT_FAILURE);
+            result.setMsg(ErpConstants.SYS_ERR);
+        }
+
+        return JSON.toJSONString(result);
+    }
+
+    /**
      * 权限与资源列表
      *
      * @param key
